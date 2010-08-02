@@ -64,9 +64,8 @@ def main():
     # create virtual environment
     if not path.isdir('toxinstall'):
         # XXX: we use --no-site-packages because: if tox is installed in global
-        # site-packages, then virtualenv would not install it locally. ideal fix
-        # for this should be to first look for tox the in global scripts/
-        # directory
+        # site-packages, then pip will not install it locally. ideal fix for
+        # this should be to first look for tox in the global scripts/ directory.
         run('python virtualenv.py --no-site-packages --distribute toxinstall')
 
     assert has_script('toxinstall', 'python')
