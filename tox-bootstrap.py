@@ -5,7 +5,7 @@ import os
 from os import path
 from urllib import urlretrieve
 import logging
-from subprocess import check_call
+from subprocess import check_call, CalledProcessError
 
 logging.basicConfig(level=logging.INFO)
 
@@ -78,9 +78,15 @@ def main():
                 get_script_path('toxinstall', 'pip')))
 
     assert has_script('toxinstall', 'tox')
-    logging.info('tox is already installed at %s',
-                 path.abspath(get_script_path('toxinstall', 'tox')))
-            
+    tox_script = path.abspath(get_script_path('toxinstall', 'tox'))
+    logging.info('tox is already installed at %s', tox_script)
+
+    # Now run the locally-installed tox
+    try:
+        run(tox_script)
+    except CalledProcessError as e:
+        logging.error('tox exited with error code %d', e.returncode)
+
 
 if __name__ == '__main__':
     main()
