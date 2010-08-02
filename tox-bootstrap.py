@@ -71,9 +71,9 @@ def main():
     assert has_script('toxinstall', 'python')
     assert has_script('toxinstall', 'pip')
 
-    # install tox itself
+    # install/upgrade tox itself
     if not has_script('toxinstall', 'tox'):
-        run('{0} install --upgrade tox'.format(
+        run('{0} install --upgrade --download-cache=pip-cache tox'.format(
                 get_script_path('toxinstall', 'pip')))
 
     assert has_script('toxinstall', 'tox')
