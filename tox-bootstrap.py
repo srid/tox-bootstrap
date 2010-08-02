@@ -13,10 +13,10 @@ logging.basicConfig(level=logging.INFO)
 VIRTUALENVPY_URL = 'http://bitbucket.org/ianb/virtualenv/raw/tip/virtualenv.py'
 
 
-def run(cmd):
+def run(cmd, shell=True):
     """Run the given command in shell"""
     logging.info('Running command: %s', cmd)
-    check_call(cmd, shell=True)
+    check_call(cmd, shell=shell)
     
 
 def wget(url):
@@ -82,7 +82,7 @@ def main():
 
     # Now run the locally-installed tox
     try:
-        run(tox_script)
+        run([tox_script] + sys.argv[1:], shell=False)
     except CalledProcessError as e:
         logging.error('tox exited with error code %d', e.returncode)
 
