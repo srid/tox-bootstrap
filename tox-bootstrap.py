@@ -56,13 +56,13 @@ def main():
         os.mkdir('.tox')
     os.chdir('.tox')
 
-    # get virtualenv.py
-    if not path.isfile('virtualenv.py'):
-        wget(VIRTUALENVPY_URL)
-    assert path.isfile('virtualenv.py')
-
     # create virtual environment
     if not path.isdir('toxinstall'):
+        # get virtualenv.py
+        if not path.isfile('virtualenv.py'):
+            wget(VIRTUALENVPY_URL)
+        assert path.isfile('virtualenv.py')
+
         # XXX: we use --no-site-packages because: if tox is installed in global
         # site-packages, then pip will not install it locally. ideal fix for
         # this should be to first look for tox in the global scripts/ directory.
