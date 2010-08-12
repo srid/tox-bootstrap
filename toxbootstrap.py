@@ -5,7 +5,9 @@ import os
 from os import path
 from urllib import urlretrieve
 import logging
-from subprocess import check_call, CalledProcessError
+import xmlrpclib
+from subprocess import Popen, PIPE, check_call, CalledProcessError
+import pkg_resources
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,6 +19,13 @@ def run(cmd, shell=True):
     """Run the given command in shell"""
     logging.info('Running command: %s', cmd)
     check_call(cmd, shell=shell)
+
+def crun(cmd, shell=True):
+    """Run the given command and return its output"""
+    logging.info('Running command (for output): %s', cmd)
+    p = Popen(cmd, stdout=PIPE, shell=shell)
+    stdout, stderr = p.communicate()
+    return stdout
     
 
 def wget(url):
@@ -34,6 +43,12 @@ def has_script(venv, name):
     else:
         return path.exists(path.join(venv, 'bin', name))
 
+def get_tox_version(venv):
+    """Return the installed version of tox"""
+    py = get_script_path(venv, 'python')
+    s = 'import tox,sys; sys.stdout.write(str(tox.__version__))'
+    return crun('{0} -s -c "{1}"'.format(py, s))
+
 
 def get_script_path(venv, name):
     """Return the full path the script in virtualenv directory"""
@@ -48,6 +63,15 @@ def get_script_path(venv, name):
         raise NameError('cannot find a script named "{0}"'.format(name))
 
     return p
+
+
+def pypi_get_latest_version(pkgname):
+    """Return the latest version of package from PyPI"""
+    pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+    versions = pypi.package_releases('tox')
+    assert versions
+    versions.sort(key=pkg_resources.parse_version, reverse=True)
+    return versions[0]
 
 
 def cmdline(argv=None):
@@ -72,9 +96,9 @@ def cmdline(argv=None):
     assert has_script('toxinstall', 'pip')
 
     # install/upgrade tox itself
-    # XXX: upgrade is currently disabled because "pip install --upgrade"
-    # forcefully downloads packages even if no newer versions are found.
-    if not has_script('toxinstall', 'tox'):
+    if any([
+        not has_script('toxinstall', 'tox'),
+        get_tox_version('toxinstall') != pypi_get_latest_version('tox')]):
         run('{0} install --upgrade --download-cache=pip-cache tox'.format(
                 get_script_path('toxinstall', 'pip')))
 
