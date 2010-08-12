@@ -72,6 +72,8 @@ def cmdline(argv=None):
     assert has_script('toxinstall', 'pip')
 
     # install/upgrade tox itself
+    # XXX: upgrade is currently disabled because "pip install --upgrade"
+    # forcefully downloads packages even if no newer versions are found.
     if not has_script('toxinstall', 'tox'):
         run('{0} install --upgrade --download-cache=pip-cache tox'.format(
                 get_script_path('toxinstall', 'pip')))
@@ -88,4 +90,4 @@ def cmdline(argv=None):
 
 
 if __name__ == '__main__':
-	cmdline(sys.argv[1:])
+    cmdline(sys.argv[1:])
