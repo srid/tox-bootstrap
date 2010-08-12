@@ -19,6 +19,11 @@ will take care of installing tox (if not already installed into
 
     $ python toxbootstrap.py 
 
+If you're using Hudson, you may also do::
+
+    import toxbootstrap
+    toxbootstrap.cmdline() # also accepts argv list
+
 ToDo
 ----
 

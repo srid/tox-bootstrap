@@ -50,7 +50,7 @@ def get_script_path(venv, name):
     return p
 
 
-def main():
+def cmdline(argv=None):
     os.chdir(path.abspath(path.dirname(__file__)))
     if not path.isdir('.tox'):
         os.mkdir('.tox')
@@ -82,10 +82,10 @@ def main():
 
     # Now run the locally-installed tox
     try:
-        run([tox_script] + sys.argv[1:], shell=False)
+        run([tox_script] + argv, shell=False)
     except CalledProcessError as e:
         logging.error('tox exited with error code %d', e.returncode)
 
 
 if __name__ == '__main__':
-    main()
+	cmdline(sys.argv[1:])
