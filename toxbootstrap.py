@@ -20,38 +20,36 @@ def run(cmd, shell=True):
     logging.info('Running command: %s', cmd)
     check_call(cmd, shell=shell)
 
+
 def crun(cmd, shell=True):
     """Run the given command and return its output"""
     logging.info('Running command (for output): %s', cmd)
     p = Popen(cmd, stdout=PIPE, shell=shell)
     stdout, stderr = p.communicate()
     return stdout
-    
+
 
 def wget(url):
     """Download the given file to current directory"""
     logging.info('Downloading %s', url)
     localpath = path.join(path.abspath(os.getcwd()), path.basename(url))
     urlretrieve(url, localpath)
-    
+
 
 def has_script(venv, name):
-    """Check if $name ($name.exe) is found in the virtualenv scripts directory"""
+    """Check if the virtualenv has the given script
+
+    Looks for bin/$name (unix) or Scripts/$name.exe (windows) in the virtualenv
+    """
     if sys.platform == 'win32':
         return any([path.exists(path.join(venv, 'Scripts', name)),
                     path.exists(path.join(venv, 'Scripts', name + '.exe'))])
     else:
         return path.exists(path.join(venv, 'bin', name))
 
-def get_tox_version(venv):
-    """Return the installed version of tox"""
-    py = get_script_path(venv, 'python')
-    s = 'import tox,sys; sys.stdout.write(str(tox.__version__))'
-    return crun('{0} -s -c "{1}"'.format(py, s))
-
 
 def get_script_path(venv, name):
-    """Return the full path the script in virtualenv directory"""
+    """Return the full path to the script in virtualenv directory"""
     if sys.platform == 'win32':
         p = path.join(venv, 'Scripts', name)
         if not path.exists(p):
@@ -63,6 +61,13 @@ def get_script_path(venv, name):
         raise NameError('cannot find a script named "{0}"'.format(name))
 
     return p
+
+
+def get_tox_version(venv):
+    """Return the installed version of tox"""
+    py = get_script_path(venv, 'python')
+    s = 'import tox,sys; sys.stdout.write(str(tox.__version__))'
+    return crun('{0} -s -c "{1}"'.format(py, s))
 
 
 def pypi_get_latest_version(pkgname):
@@ -89,7 +94,7 @@ def cmdline(argv=None):
 
         # XXX: we use --no-site-packages because: if tox is installed in global
         # site-packages, then pip will not install it locally. ideal fix for
-        # this should be to first look for tox in the global scripts/ directory.
+        # this should be to first look for tox in the global scripts/ directory
         run('python virtualenv.py --no-site-packages --distribute toxinstall')
 
     assert has_script('toxinstall', 'python')
