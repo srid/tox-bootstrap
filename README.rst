@@ -30,3 +30,4 @@ ToDo
 1. Detect tox in ``$PATH`` (eg: ``C:\Python26\Scripts`` or
    ``%APPDATA%\Python\Scripts``)
 
+2. Gracefully ignore PyPI xmlrpc downtime errors when checking for new release.
