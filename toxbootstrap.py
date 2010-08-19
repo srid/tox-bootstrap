@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Find the latest version of this script at:
+#    http://github.com/srid/tox-bootstrap
 
 import sys
 import os
