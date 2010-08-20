@@ -114,10 +114,12 @@ def cmdline(argv=None):
     logging.info('tox is already installed at %s', tox_script)
 
     # Now run the locally-installed tox
+    os.chdir('..')
     try:
-        run([tox_script] + argv, shell=False)
+        run([tox_script] + (argv or []), shell=False)
     except CalledProcessError as e:
         logging.error('tox exited with error code %d', e.returncode)
+        sys.exit(e.returncode)
 
 
 if __name__ == '__main__':
