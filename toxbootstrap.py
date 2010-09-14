@@ -14,7 +14,8 @@ import pkg_resources
 logging.basicConfig(level=logging.INFO)
 
 
-VIRTUALENVPY_URL = 'http://bitbucket.org/ianb/virtualenv/raw/tip/virtualenv.py'
+# Last stable: 1.4.9
+VIRTUALENVPY_URL = 'http://bitbucket.org/ianb/virtualenv/raw/6d187b9cf916/virtualenv.py'
 
 
 def run(cmd, shell=True):
