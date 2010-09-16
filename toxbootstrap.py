@@ -5,11 +5,19 @@
 import sys
 import os
 from os import path
-from urllib import urlretrieve
 import logging
-import xmlrpclib
+
 from subprocess import Popen, PIPE, check_call, CalledProcessError
 import pkg_resources
+
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    from urllib.request import urlretrieve
+    import xmlrpc.client as xmlrpclib
+else:
+    from urllib import urlretrieve
+    import xmlrpclib
 
 logging.basicConfig(level=logging.INFO)
 
